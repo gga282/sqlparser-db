@@ -5,30 +5,26 @@ import os
 from glob import glob
 from pathlib import Path
 
-dbfile={}
+# Global dictionary to store table objects
+dbfile = {}
+
 def load_all_tables():
-    
-    if not os.path.exists('/dbfiles'):
+    if not os.path.exists('dbfiles'):
         raise FileNotFoundError("No db folder found")
     else:
-        for name in glob.glob('/dbfiles/*.csv'):
-            table_name=Path(name).stem
-            dbfile[name]=schema.TableSchema(name)
-            print(f"Loaded table: {name}")
-
-    
+        for name in glob('dbfiles/*.csv'):
+            table_name = Path(name).stem
+            dbfile[table_name] = schema.TableSchema(name)
+            print(f"Loaded table: {table_name}")
 
 def get_table(table_name):
     if table_name in dbfile:
         return dbfile[table_name]
     else:
-        raise FileNotFoundError("Table Not Found!!")
-
-
-
+        raise FileNotFoundError(f"Table {table_name} Not Found!!")
 
 def get_schema(table_name):
-    table=get_table(table_name)
+    table = get_table(table_name)
     if table:
         return table.get_schema_dict()
     else:
