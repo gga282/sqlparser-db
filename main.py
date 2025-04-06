@@ -4,29 +4,42 @@ import sys
 import os
 from pathlib import Path
 from glob import glob
+import catalog
 
 def initialize_db_directory():
-    dbfile=[]
-    if not os.path.exists('/dbfiles'):
-        os.makedirs('/dbfiles')
+    # Create dbfiles file if it doesnt exist
+    if not os.path.exists('dbfiles/'):
+        os.makedirs('dbfiles/')
+        print("Created database directory")
 
+    # Print available tables
     print("Available tables:")
-    for name in glob.glob('/dbfiles/*.csv'):
-        dbfile.append(name)
+    table_files = glob('dbfiles/*.csv')
+    
+    if not table_files:
+        print("  No tables found")
+    else:
+        for name in table_files:
+            print(f"  {Path(name).stem}")
 
-    for name in dbfile:
-        print(name)
-
-
+# Initialize database directory first
 initialize_db_directory()
 
+#load existing tables
+try:
+    catalog.load_all_tables()
+except Exception as e:
+    print(f"Error loading tables: {e}")
+
+print("Simple SQL Database System")
+print("Type 'exit' or 'quit' to exit")
+
 while True:
-    user_input=input("db> ")
-    if user_input.lower() in ("exit","quit"):
-        break
     try:
+        user_input = input("db> ")
+        if user_input.lower() in ("exit", "quit"):
+            print("Goodbye!")
+            break
         parser.user_query_input(user_input)
     except Exception as e:
         print(f"Error: {e}")
-
-
